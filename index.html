@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk / Daftar - Toko Online</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-body">
+
+    <div class="auth-container">
+        <!-- Form Login -->
+        <div id="login-form" class="auth-box">
+            <h2>Selamat Datang Kembali</h2>
+            <form id="form-login">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" required placeholder="Masukkan email Anda">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required placeholder="Masukkan password">
+                </div>
+                <button type="submit" class="btn-primary">Masuk</button>
+            </form>
+            <p class="auth-links">
+                Belum punya akun? <a href="#" id="link-to-register">Daftar di sini</a><br>
+                Lupa password? <a href="#" id="link-to-forgot">Reset Password</a>
+            </p>
+        </div>
+
+        <!-- Form Daftar -->
+        <div id="register-form" class="auth-box hidden">
+            <h2>Buat Akun Baru</h2>
+            <form id="form-register">
+                <div class="input-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="reg-name" required placeholder="Nama Lengkap">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" required placeholder="Email Aktif">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" required placeholder="Minimal 6 karakter">
+                </div>
+                <button type="submit" class="btn-primary">Daftar & Masuk</button>
+            </form>
+            <p class="auth-links">
+                Sudah punya akun? <a href="#" id="link-to-login-from-reg">Masuk di sini</a>
+            </p>
+        </div>
+
+        <!-- Form Reset Password -->
+        <div id="forgot-form" class="auth-box hidden">
+            <h2>Reset Password</h2>
+            <p class="info-text">Masukkan email Anda untuk memperbarui password Anda.</p>
+            <form id="form-forgot">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="forgot-email" required placeholder="Email terdaftar">
+                </div>
+                <div class="input-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="forgot-new-password" required placeholder="Password baru">
+                </div>
+                <button type="submit" class="btn-primary">Perbarui Password</button>
+            </form>
+            <p class="auth-links">
+                Kembali ke <a href="#" id="link-to-login-from-forgot">Halaman Masuk</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <div class="wa-chat-widget">
+    <button class="wa-floating-btn" onclick="toggleWaChat()">
+        <span class="wa-icon">💬</span>
+        <span class="wa-badge-online"></span>
+    </button>
+
+    <div id="wa-chat-box" class="wa-chat-box hidden">
+        <div class="wa-chat-header">
+            <div class="wa-avatar">👨‍💻</div>
+            <div class="wa-admin-info">
+                <h4>Customer Support</h4>
+                <p>🟢 Online (Respons Cepat)</p>
+            </div>
+            <button class="wa-close-btn" onclick="toggleWaChat()">❌</button>
+        </div>
+        <div class="wa-chat-body">
+            <p class="wa-msg-received">Halo! Ada yang bisa kami bantu? Jika mengalami kendala tentang Password akun anda silahkan hubungi mimin disini! mimin siap bantu secepatnya. 🚀</p>
+        </div>
+        <div class="wa-chat-footer">
+            <input type="text" id="wa-chat-input" placeholder="Tulis pesan masalah Anda di sini..." onkeypress="handleWaEnter(event)">
+            <button onclick="kirimKeWhatsApp()" class="wa-send-btn">➔</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

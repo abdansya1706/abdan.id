@@ -1,0 +1,30 @@
+[
+  {
+    "orderId": "INV-642785",
+    "namaPembeli": "Abdan syakuro",
+    "teleponPembeli": "083851923159",
+    "totalBelanja": 39000,
+    "itemBelanja": [
+      {
+        "nama": "Followers IG 1000 | Low Drop 60 Day ♻️",
+        "qty": 1,
+        "subtotal": 39000
+      }
+    ],
+    "tanggalPembelian": "8/7/2026, 12.32.40"
+  },
+  {
+    "orderId": "INV-941825",
+    "namaPembeli": "Antonio",
+    "teleponPembeli": "08123456789 | Target: xadsdi_19",
+    "totalBelanja": 230,
+    "itemBelanja": [
+      {
+        "nama": "10 Instagram Likes | 100% HQ Accounts | Non Drop | 60 Days ♻️ | Instant Start | Day 500K 🚀 | Diskon 50%",
+        "qty": 1,
+        "subtotal": 230
+      }
+    ],
+    "tanggalPembelian": "8/7/2026, 15.38.01"
+  }
+]

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMM Control Console - Owner</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-main { max-width: 1300px; margin: 30px auto; padding: 0 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { background: rgba(99, 102, 241, 0.08); color: var(--accent); font-weight: 700; }
+        .alert-banner { display: none; background: #1e1b4b; border: 1px solid var(--accent); color: #c7d2fe; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.9; } 50% { opacity: 0.5; } 100% { opacity: 0.9; } }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">SMM<span>OwnerPanel</span></div>
+        <button onclick="window.location.href='dashboard.html'" class="tab-btn active">Kembali Ke Toko</button>
+    </header>
+
+    <main class="admin-main">
+        <div id="notif-banner" class="alert-banner">🔔 PEMBERITAHUAN: Ada Layanan Orderan Suntik Baru Masuk!</div>
+
+        <h2>Panel Utama Pemantauan Bisnis</h2>
+        <p style="color: var(--text-secondary); font-size:14px; margin-bottom: 25px;">Sistem terhubung secara Live ke database server.</p>
+
+        <section class="cart-section" style="max-width: 100%; margin-bottom: 40px; display: block;">
+            <h3 style="color: var(--accent); margin-bottom: 15px;">➕ Tambah / Daftarkan Layanan Baru (Sinkron ke Semua User)</h3>
+            <form id="form-tambah" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 15px; align-items: end;">
+                <div class="form-input" style="margin: 0;">
+                    <label>Nama Layanan Jasa</label>
+                    <input type="text" id="p-name" placeholder="Misal: 1000 Followers IG" required>
+                </div>
+                <div class="form-input" style="margin: 0;">
+                    <label>Kategori Media Sosial</label>
+                    <input type="text" id="p-category" placeholder="instagram / tiktok / youtube" required>
+                </div>
+                <div class="form-input" style="margin: 0;">
+                    <label>Harga Jual (Rp)</label>
+                    <input type="number" id="p-price" placeholder="Harga" required>
+                </div>
+                <button type="submit" class="btn-checkout" style="padding: 12px 25px; height: 45px;">Terbitkan Produk</button>
+            </form>
+        </section>
+
+        <h3>📋 Daftar Target Orderan Pengguna</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Order</th>
+                        <th>Waktu Transaksi</th>
+                        <th>Nama Pembeli</th>
+                        <th>Kontak & Link Target Akun</th>
+                        <th>Item Jasa</th>
+                        <th>Total Bayar</th>
+                    </tr>
+                </thead>
+                <tbody id="pembeli-rows">
+                    <tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">Menghubungkan ke database server...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const session = localStorage.getItem('sessionUser');
+        if (!session || JSON.parse(session).email !== 'abdansyakuro1706@gmail.com') {
+            alert('Akses ilegal diblokir!'); window.location.href = 'dashboard.html';
+        }
+        const user = JSON.parse(session);
+
+        // Efek Suara Alarm Menggunakan Web Audio API (Tanpa butuh file eksternal .mp3)
+        function mainkanBunyiNotifikasi() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+            oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nada D5
+            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.15);
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator(); osc2.connect(gainNode);
+                osc2.type = 'sine'; osc2.frequency.setValueAtTime(880, audioCtx.currentTime); // Nada A5
+                osc2.start(); osc2.stop(audioCtx.currentTime + 0.3);
+            }, 150);
+        }
+
+        // Ambil Data Awal
+        async function muatAwal() {
+            const res = await fetch(`/api/admin/pembeli?email=${user.email}`);
+            const result = await res.json();
+            if(result.success) renderTabel(result.data);
+        }
+
+        function renderTabel(data) {
+            const tbody = document.getElementById('pembeli-rows');
+            tbody.innerHTML = data.length === 0 ? '<tr><td colspan="6" style="text-align:center;">Belum ada orderan masuk.</td></tr>' : '';
+            data.reverse().forEach(order => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:#6366f1;">${order.orderId}</td>
+                        <td style="font-size:12px; color:var(--text-secondary);">${order.tanggalPembelian}</td>
+                        <td>${order.namaPembeli}</td>
+                        <td style="color:#fb923c; font-weight:600; font-size:13px;">${order.teleponPembeli}</td>
+                        <td>${order.itemBelanja.map(i=>i.nama).join(', ')}</td>
+                        <td style="color:var(--neon-green); font-weight:700;">Rp ${order.totalBelanja.toLocaleString('id-ID')}</td>
+                    </tr>`;
+            });
+        }
+
+        // INTEGRASI FITUR NOTIFIKASI OTOMATIS REAL-TIME DARI SERVER
+        const eventSource = new EventSource('/api/admin/updates');
+        eventSource.onmessage = function(event) {
+            const orderBaru = JSON.parse(event.data);
+            mainkanBunyiNotifikasi(); // Bunyi alarm langsung aktif
+            
+            const banner = document.getElementById('notif-banner');
+            banner.innerText = `🔔 LAYANAN BARU MASUK: ${orderBaru.namaPembeli} memesan ${orderBaru.itemBelanja[0].nama}!`;
+            banner.style.display = 'block';
+            
+            setTimeout(() => { banner.style.display = 'none'; }, 8000);
+            muatAwal(); // Perbarui list tabel tanpa reload halaman
+        };
+
+        // Form Submit Tambah Produk
+        document.getElementById('form-tambah').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('p-name').value;
+            const category = document.getElementById('p-category').value.toLowerCase().trim();
+            const price = parseInt(document.getElementById('p-price').value);
+
+let imgUrl = "https://cdn-icons-png.flaticon.com/128/2111/2111463.png"; // Default (WhatsApp)
+
+if (category === "tiktok")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/3046/3046121.png";
+
+if (category === "youtube")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/1384/1384060.png";
+
+if (category === "instagram")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/2111/2111463.png";
+
+if (category === "shopee")
+    imgUrl = "/produk.img/shopee.png"; // atau gunakan URL di nobawah
+
+// imgUrl = "https://cdn-icons-png.flaticon.com/128/5968/5968220.png";
+
+if (category === "twitter")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/5968/5968830.png";
+
+if (category === "telegram")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/2111/2111646.png";
+
+if (category === "facebook")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/733/733547.png";
+
+if (category === "spotify")
+    imgUrl = "https://cdn-icons-png.flaticon.com/128/174/174872.png";
+
+
+            const res = await fetch('/api/admin/tambah-layanan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user.email, produkBaru: { id: Date.now(), category, name, price, img: imgUrl } })
+            });
+            const out = await res.json();
+            alert(out.message);
+            if(out.success) document.getElementById('form-tambah').reset();
+        });
+
+        muatAwal();
+    </script>
+</body>
+</html>

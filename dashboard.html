@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXP_Store - Dashboard Layanan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Animasi Loading Screen Keren -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p>Tunggu sebentar sedang memuat data...</p>
+    </div>
+
+    <!-- Header / Navbar Modern -->
+    <header class="navbar">
+        <div class="logo">AXP<span>Store</span></div>
+<nav class="nav-right">
+    <button id="owner-secret-btn" onclick="window.location.href='admin.html'" class="tab-btn active" style="display: none; padding: 6px 14px; margin-right: 15px; font-size: 13px; background: #fb923c; border-color: #fb923c;">💼 Panel Owner</button>
+    
+    <span id="welcome-user">Halo, Admin</span>
+    <button onclick="logout()" class="btn-logout">Logout</button>
+</nav>
+    </header>
+
+    <!-- Kontrol Utama: Pencarian & Kategori Sosmed -->
+    <div class="control-panel">
+        <!-- Fitur Pencarian Otomatis -->
+        <div class="search-box">
+            <input type="text" id="search-input" oninput="cariProduk()" placeholder="🔍 Cari layanan... (misal: Followers Instagram, View Tiktok)">
+        </div>
+
+        <!-- Pemisah Kategori Keren -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterKategori('all')">Semua</button>
+            <button class="tab-btn" onclick="filterKategori('instagram')">📸 Instagram</button>
+            <button class="tab-btn" onclick="filterKategori('tiktok')">🎵 TikTok</button>
+            <button class="tab-btn" onclick="filterKategori('youtube')">📺 YouTube</button>
+            <button class="tab-btn" onclick="filterKategori('twitter')">🐦 Twitter/X</button>
+            <button class="tab-btn" onclick="filterKategori('telegram')">✈️ Telegram</button>
+            <button class="tab-btn" onclick="filterKategori('facebook')">📘 Facebook</button>
+            <button class="tab-btn" onclick="filterKategori('spotify')">🎵 Spotify</button>
+            <button class="tab-btn" onclick="filterKategori('shopee')">🧡 Shopee</button>
+        </div>
+    </div>
+
+    <!-- Konten Utama Dashboard -->
+    <main class="store-container">
+        <!-- Bagian Kiri: Katalog Jasa SMM -->
+        <section class="products-section">
+            <h2 id="section-title">Semua Layanan Terbaik</h2>
+            <div class="products-grid" id="products-container">
+                <!-- Diisi otomatis oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- Bagian Kanan: Formulir Pemesanan & Pembayaran -->
+        <section class="cart-section">
+            <h2>Detail Pesanan Jasa</h2>
+            <div id="cart-items">
+                <p class="empty-cart">Silakan pilih layanan di sebelah kiri.</p>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- FORM DATA PEMBELI (Diperlukan untuk memproses suntik akun) -->
+            <div class="checkout-form-group">
+                <h3>Form Validasi Target</h3>
+                <div class="form-input">
+                    <label>Nama Lengkap Anda</label>
+                    <input type="text" id="buyer-name" placeholder="Masukkan nama Anda" required>
+                </div>
+                <div class="form-input">
+                    <label>Nomor WhatsApp (Aktif)</label>
+                    <input type="tel" id="buyer-phone" placeholder="Contoh: 08123456789" required>
+                </div>
+                <div class="form-input">
+                    <label style="color: #ff4e4e;">Link Target / Username Akun Sosmed</label>
+                    <input type="text" id="buyer-target" placeholder="Contoh: @username atau link video" style="border-color: rgba(255,78,78,0.3);" required>
+                </div>
+            </div>
+            
+            <hr class="divider">
+
+            <div class="cart-total">
+                <span>Total Harga:</span>
+                <span id="cart-total-price">Rp 0</span>
+            </div>
+            <button onclick="checkout()" class="btn-checkout">Proses Suntik & Bayar</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+
+    <div class="wa-chat-widget">
+    <button class="wa-floating-btn" onclick="toggleWaChat()">
+        <span class="wa-icon">💬</span>
+        <span class="wa-badge-online"></span>
+    </button>
+
+    <div id="wa-chat-box" class="wa-chat-box hidden">
+        <div class="wa-chat-header">
+            <div class="wa-avatar">👨‍💻</div>
+            <div class="wa-admin-info">
+                <h4>Customer Support</h4>
+                <p>🟢 Online (Respons Cepat)</p>
+            </div>
+            <button class="wa-close-btn" onclick="toggleWaChat()">❌</button>
+        </div>
+        <div class="wa-chat-body">
+            <p class="wa-msg-received">Halo! Ada yang bisa kami bantu? Jika mengalami kendala saat top up atau suntik sosmed, silakan hubungi kami langsung di sini. Mimin siap bantu! 🚀</p>
+        </div>
+        <div class="wa-chat-footer">
+            <input type="text" id="wa-chat-input" placeholder="Tulis pesan masalah Anda di sini..." onkeypress="handleWaEnter(event)">
+            <button onclick="kirimKeWhatsApp()" class="wa-send-btn">➔</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 AXP_Store. Semua data dilindungi.</p>
+</footer>
+</body>
+</html>
